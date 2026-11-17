@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>采购 Agent · 执行护栏</title>
+<link rel="stylesheet" href="/style.css">
+<script src="/app.js" defer></script>
+</head>
+<body>
+<a href="#main" class="skip">跳至工作台</a>
+<header class="top"><div class="wrap top-inner"><div class="brand"><span class="mark" aria-hidden="true">⌘</span><span>执行护栏 <small> / WORKBENCH</small></span></div><p id="connection" class="connection" role="status">正在检查网关</p></div></header>
+<main id="main" class="wrap">
+<section class="hero"><div><p class="micro">本地演示 <span>/</span> 合成数据</p><h1>采购 Agent 执行护栏</h1><p class="lede">Agent 提出操作，由网关决定能否执行。用一份模拟采购单，走完权限检查、人工审批和审计回看。</p></div><aside class="flow"><p class="flow-heading">演示路径</p><ol><li>分析员发起操作</li><li>主管处理导出审批</li><li>分析员执行，审计员核对</li></ol></aside></section>
+<div class="tabs" role="group" aria-label="演示角色"><button data-role="analyst" aria-pressed="true">01　采购分析员</button><button data-role="supervisor" aria-pressed="false">02　采购主管</button><button data-role="auditor" aria-pressed="false">03　审计员</button></div>
+<p class="roles-note">角色切换仅供演示，不是生产身份认证。没有真实采购记录，也不会发送文件或订单。</p>
+<div class="desk">
+<div class="panel">
+<section id="analyst">
+<div class="panel-heading"><p class="micro">01 / 分析员</p><h2>发起采购操作</h2><p>直接选择示例，或让 Agent 先生成建议。建议不会自动执行。</p></div>
+<div class="presets" aria-label="预设操作"><button type="button" data-example="read">读取已分配单</button><button type="button" data-example="out">读取未分配单</button><button type="button" data-example="export">申请导出</button><button type="button" data-example="order">尝试发送订单</button></div>
+<form id="proposal-form" class="proposal"><label for="message">自然语言生成建议 <span>可选</span></label><div class="inline"><input id="message" name="message" maxlength="500" placeholder="例如：查询采购单 PR-1001" required><button class="secondary" type="submit">生成建议</button></div></form>
+<form id="action-form" class="action-form">
+<div class="fields"><div><label for="action">操作</label><select id="action" name="action"><option value="read_request">读取采购单</option><option value="export_request">导出采购单</option><option value="send_order">发送采购订单</option></select></div><div><label for="request-id">采购单编号</label><input id="request-id" name="request_id" value="PR-1001" list="assigned" maxlength="40" required><datalist id="assigned"></datalist></div></div>
+<div id="export-fields" class="fields" hidden><div><label for="recipient">指定接收方</label><input id="recipient" name="recipient" type="email" value="ops@example.test" maxlength="100"></div><div><label for="approval-id">审批编号 <span>首次申请留空</span></label><input id="approval-id" name="approval_id" maxlength="100" placeholder="获批后再执行"></div></div>
+<div class="form-end"><button class="primary" id="submit-action" type="submit">交给网关判定</button><span id="approval-tip"></span></div>
+</form>
+</section>
+<section id="supervisor" hidden>
+<div class="panel-heading"><p class="micro">02 / 主管</p><h2>采购导出审批</h2><p>核对采购单及接收方。批准本身不会执行导出，须由原分析员再次提交。</p></div>
+<div class="refresh-row"><button class="secondary" type="button" data-refresh="supervisor">刷新审批列表</button></div>
+<div class="list" id="approval-list" aria-live="polite">正在加载</div>
+</section>
+<section id="auditor" hidden>
+<div class="panel-heading"><p class="micro">03 / 审计员</p><h2>执行审计记录</h2><p>检查放行、拒绝、审批和执行的时间、原因及适用规则。</p></div>
+<div class="refresh-row"><button class="secondary" type="button" data-refresh="auditor">刷新审计记录</button></div>
+<div class="list" id="audit-list" aria-live="polite">正在加载</div>
+</section>
+</div>
+<aside class="panel receipt">
+<div class="panel-heading"><p class="micro">GATEWAY RECEIPT</p><h2>网关回执</h2><p>这里显示真实本地接口返回，不由演示界面模拟决策。</p></div>
+<div id="receipt" aria-live="polite" aria-atomic="true"><span class="pill neutral">待操作</span><p>选择读取已分配单，再点击「交给网关判定」开始。</p></div>
+<details id="raw-wrap" hidden><summary>查看接口详情</summary><pre id="raw"></pre></details>
+</aside>
+</div>
+</main>
+<footer class="wrap">采购护栏原型 <span>·</span> 本地测试用，不连接任何真实业务系统。</footer>
+</body>
+</html>
